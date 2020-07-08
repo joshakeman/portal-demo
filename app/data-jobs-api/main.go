@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"portal-demo/app/data-jobs-api/handlers"
+	"portal-demo/foundation/database"
 	"syscall"
 	"time"
 
@@ -39,11 +40,12 @@ func run(log *log.Logger) error {
 			ShutdownTimeout time.Duration `conf:"default:5s"`
 		}
 		DB struct {
-			User       string `conf:"default:mysql"`
-			Password   string `conf:"default:mysql,noprint"`
-			Host       string `conf:"default:db"`
-			Name       string `conf:"default:mysql"`
-			DisableTLS bool   `conf:"default:false"`
+			User     string `conf:"default:mysql"`
+			Password string `conf:"default:mysql,noprint"`
+			Host     string `conf:"default:db"`
+			Name     string `conf:"default:mysql"`
+			Port     string `conf:"default:3306"`
+			// DisableTLS bool   `conf:"default:false"`
 		}
 	}
 	cfg.Version.SVN = build
@@ -84,6 +86,35 @@ func run(log *log.Logger) error {
 	log.Printf("main: Config :\n%v\n", out)
 
 	// =========================================================================
+	// Start Database
+
+	log.Println("main: Initializing database support")
+
+	// db, err := database.Open(database.Config{
+	// 	User:       cfg.DB.User,
+	// 	Password:   cfg.DB.Password,
+	// 	Host:       cfg.DB.Host,
+	// 	Name:       cfg.DB.Name,
+	// 	Port:       cfg.DB.Port,
+	// 	DisableTLS: cfg.DB.DisableTLS,
+	// })
+	db, err := database.Open(database.Config{
+		User:     "edl_rds_rpt",
+		Password: "EDLDashboard123",
+		Host:     "antm-mysqldb-us-east-1c.csntho9gpvhy.us-east-1.rds.amazonaws.com",
+		Name:     "audt_cntrl",
+		Port:     "3306",
+		// DisableTLS: cfg.DB.DisableTLS,
+	})
+	if err != nil {
+		return errors.Wrap(err, "connecting to db")
+	}
+	defer func() {
+		log.Printf("main: Database Stopping : %s", cfg.DB.Host)
+		db.Close()
+	}()
+
+	// =========================================================================
 	// Start API Service
 
 	log.Println("main: Initializing API support")
@@ -96,7 +127,7 @@ func run(log *log.Logger) error {
 	api := http.Server{
 		Addr: cfg.Web.APIHost,
 		// Handler:      handlers.API(build, shutdown, log, db, a),
-		Handler:      handlers.API(build, shutdown),
+		Handler:      handlers.API(build, shutdown, db),
 		ReadTimeout:  cfg.Web.ReadTimeout,
 		WriteTimeout: cfg.Web.WriteTimeout,
 	}

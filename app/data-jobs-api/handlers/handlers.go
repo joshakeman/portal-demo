@@ -41,11 +41,11 @@ func API(build string, shutdown chan os.Signal, db *sql.DB) http.Handler {
 	// // This route is not authenticated.
 	// app.Handle(http.MethodGet, "/v1/users/token", u.token)
 
-	// // Register product and sale endpoints.
-	// p := productHandlers{
-	// 	db: db,
-	// }
-	// app.Handle(http.MethodGet, "/v1/products", p.list, mid.Authenticate(a))
+	// Register job  endpoints.
+	j := jobHandlers{
+		db: db,
+	}
+	app.Handle(http.MethodGet, "/jobs", j.list)
 	// app.Handle(http.MethodPost, "/v1/products", p.create, mid.Authenticate(a))
 	// app.Handle(http.MethodGet, "/v1/products/:id", p.retrieve, mid.Authenticate(a))
 	// app.Handle(http.MethodPut, "/v1/products/:id", p.update, mid.Authenticate(a))

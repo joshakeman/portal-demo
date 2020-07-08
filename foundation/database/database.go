@@ -26,6 +26,13 @@ func Open(cfg Config) (*sql.DB, error) {
 
 	connstring := cfg.buildConnectionString()
 
+	db, err := sql.Open("mysql", connstring)
+	if err != nil {
+		return nil, err
+	}
+	if err := StatusCheck(db); err != nil {
+		return nil, err
+	}
 	return sql.Open("mysql", connstring)
 }
 
@@ -41,7 +48,12 @@ func StatusCheck(db *sql.DB) error {
 	// round trip to the database.
 	const q = `SELECT true`
 	var tmp bool
-	return db.QueryRow(q).Scan(&tmp)
+	// return db.QueryRow(q).Scan(&tmp)
+	err := db.QueryRow(q).Scan(&tmp)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (cfg *Config) buildConnectionString() string {

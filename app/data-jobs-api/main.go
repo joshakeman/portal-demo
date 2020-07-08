@@ -8,10 +8,11 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"portal-demo/app/data-jobs-api/handlers"
-	"portal-demo/foundation/database"
 	"syscall"
 	"time"
+
+	"github.com/joshakeman/portal-demo/app/data-jobs-api/handlers"
+	"github.com/joshakeman/portal-demo/foundation/database"
 
 	"github.com/ardanlabs/conf"
 	"github.com/pkg/errors"

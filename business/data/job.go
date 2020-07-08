@@ -18,7 +18,7 @@ var (
 )
 
 // List returns all records
-func List(ctx context.Context, db *sql.DB, id string) ([]Job, error) {
+func List(ctx context.Context, db *sql.DB) ([]Job, error) {
 	stmt, err := db.Prepare(`SELECT aplctn_cd, s3_bkt_key_cmbntn, domain_cd, sor_cd, trgt_tbl_nm, trgt_schma, prcsng_type, job_id, job_nm, load_type, s3_inbnd_bkt, s3_inbnd_key, s3_archv_bkt, s3_archv_key, s3_app_bkt, s3_app_key, s3_cnsmptn_bkt, s3_cnsmptn_key, trgt_pltfrm, del_tbl_nm, stg_tbl_nm, stg_schma, load_type, key_list, del_key_list, src_file_type, unld_file_type, unld_partn_key, unld_frqncy, unld_type, dlmtr, vrnc_alwd_pct, post_load_mthd, job_type, etl_job_parms, load_frqncy, dscvr_schma_flag, actv_flag, creat_dtm, rqstr_id, ownrshp_team, last_updt_dtm FROM edl_job_cnfgrn ORDER BY domain_cd, sor_cd, trgt_tbl_nm`)
 	if err != nil {
 		return []Job{}, err

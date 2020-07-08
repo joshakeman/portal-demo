@@ -6,7 +6,8 @@ import (
 	"database/sql"
 	"net/http"
 	"os"
-	"portal-demo/foundation/web"
+
+	"github.com/joshakeman/portal-demo/foundation/web"
 	// "github.com/ardanlabs/service/business/auth" // Import is removed in final PR
 	// "github.com/ardanlabs/service/foundation/web"
 	// "github.com/jmoiron/sqlx"

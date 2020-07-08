@@ -7,7 +7,7 @@ import (
 
 	"github.com/joshakeman/portal-demo/foundation/web"
 
-	"github.com/joshakeman/portal-demo/business/job"
+	job "github.com/joshakeman/portal-demo/business/data"
 )
 
 type jobHandlers struct {
@@ -15,16 +15,15 @@ type jobHandlers struct {
 }
 
 func (h *jobHandlers) list(ctx context.Context, w http.ResponseWriter, r *http.Request) error {
-	// ctx, span := global.Tracer("service").Start(ctx, "handlers.product.retrieve")
-	// defer span.End()
-
 	jobs, err := job.List(ctx, h.db)
 	if err != nil {
 		switch err {
 		case job.ErrInvalidID:
-			return web.NewRequestError(err, http.StatusBadRequest)
+			return err
+			// return web.NewRequestError(err, http.StatusBadRequest)
 		case job.ErrNotFound:
-			return web.NewRequestError(err, http.StatusNotFound)
+			return err
+			// return web.NewRequestError(err, http.StatusNotFound)
 		default:
 			return err
 		}
